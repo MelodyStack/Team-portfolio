@@ -1,0 +1,359 @@
+@import "tailwindcss";
+
+/*
+ *  ────────────────────────────────────────────────────────────────────────
+ *   WARM & HUMAN: one fixed theme
+ *  ────────────────────────────────────────────────────────────────────────
+ *
+ *  Cream paper, deep teal, terracotta. Soft radii, soft shadows, sentence
+ *  case. No light/dark switch: there is no `.dark` variant and no
+ *  `prefers-color-scheme` branch anywhere, so every token below is final.
+ *
+ *  The brief was warm, premium and trustworthy rather than loud. Depth comes
+ *  from layered warm tints and soft tinted shadows rather than from hard
+ *  rules, headings are a soft serif, and photography carries the page.
+ *
+ *  Contrast, measured against --color-cream (Y = 0.966):
+ *    ink 14.2:1 · muted 6.1:1 · faint 4.9:1 · teal 11.4:1 · clay-ink 5.8:1
+ *  `clay` itself is 4.0:1, under the AA floor for body copy, so it is a
+ *  FILL. Where the accent has to be text on cream, use `clay-ink`.
+ */
+
+@theme {
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+
+  /* ── Paper ──────────────────────────────────────────────────────────── */
+  --color-cream: #fdfbf7;
+  /* One warm step down, for alternating sections. */
+  --color-cream-2: #f6f1e8;
+  --color-cream-3: #efe8dc;
+  /* Cards sit above the cream, so they are plain white. */
+  --color-card: #ffffff;
+
+  /* ── Teal: the dark, for headings and inverted sections ─────────────── */
+  --color-teal: #0f3d3e;
+  --color-teal-soft: #16534f;
+  /* Legible on teal: 6.2:1. */
+  --color-teal-200: #9bc4bc;
+
+  /* ── Terracotta ─────────────────────────────────────────────────────── */
+  /* Fill only on cream (4.0:1). */
+  --color-clay: #c75b39;
+  /* The text-safe step: 5.8:1 on cream. */
+  --color-clay-ink: #a8442a;
+  /* Soft tint for washes and chips. */
+  --color-clay-soft: #f6e2d8;
+  /* Legible on teal: 5.8:1. */
+  --color-clay-200: #e8a68c;
+
+  /* ── Type ───────────────────────────────────────────────────────────── */
+  --color-ink: #1c2b2a;
+  --color-muted: #52635f;
+  /* Quietest step, carrying small labels. 4.9:1, over the AA floor for text
+     below 18px. Don't lighten this or lighten the cream. */
+  --color-faint: #64726f;
+
+  --color-on-teal: #fdfbf7;
+  --color-on-teal-muted: #9bc4bc;
+
+  /* ── Rules ──────────────────────────────────────────────────────────── */
+  --color-line: #0f3d3e2e;
+  --color-line-soft: #0f3d3e17;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --animate-marquee: marquee 46s linear infinite;
+  --animate-float: float 16s ease-in-out infinite alternate;
+  --animate-pulse-dot: pulse-dot 2.6s ease-out infinite;
+}
+
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    /* The track renders its children twice; moving exactly half loops it. */
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes float {
+  from {
+    transform: translate3d(-3%, -2%, 0) scale(1);
+  }
+  to {
+    transform: translate3d(3%, 3%, 0) scale(1.1);
+  }
+}
+
+@keyframes pulse-dot {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  70%,
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+/* The hero entrance. CSS, not JS; see the .enter note below. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1rem, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@layer base {
+  * {
+    border-color: var(--color-line-soft);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Keep anchored sections clear of the floating header. */
+    scroll-padding-top: 7rem;
+    -webkit-tap-highlight-color: transparent;
+    background-color: var(--color-cream);
+    color-scheme: light;
+  }
+
+  body {
+    background-color: var(--color-cream);
+    color: var(--color-ink);
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background-color: var(--color-clay-soft);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-clay-ink);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  * {
+    scrollbar-color: var(--color-teal-200) transparent;
+    scrollbar-width: thin;
+  }
+
+  ::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--color-cream-2);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-teal-200);
+    border-radius: 999px;
+    border: 3px solid var(--color-cream-2);
+  }
+}
+
+@layer components {
+  /* The standard page gutter. One class so every section lines up on the
+     same vertical rules, which is most of why a page reads as designed. */
+  .shell {
+    width: 100%;
+    max-width: 82rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .shell {
+      padding-inline: 2.5rem;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .shell {
+      padding-inline: 3.5rem;
+    }
+  }
+
+  /*
+   * Soft serif display. Fraunces at a low SOFT axis keeps the warmth without
+   * the quirk, and slight negative tracking stops large settings feeling
+   * loose. This is the single biggest contributor to the page reading as
+   * warm and expensive rather than as another SaaS template.
+   */
+  .display {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-variation-settings:
+      "SOFT" 40,
+      "WONK" 0;
+    letter-spacing: -0.02em;
+    line-height: 1.02;
+  }
+
+  .headline {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-variation-settings:
+      "SOFT" 40,
+      "WONK" 0;
+    letter-spacing: -0.015em;
+    line-height: 1.1;
+  }
+
+  /* Small label above a section. Sentence case, with a soft clay dot. */
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--color-clay-ink);
+  }
+
+  .eyebrow::before {
+    content: "";
+    width: 0.4375rem;
+    height: 0.4375rem;
+    flex: none;
+    border-radius: 999px;
+    background-color: var(--color-clay);
+  }
+
+  /*
+   * Hand-drawn underline for one phrase in a heading. An SVG swash rather
+   * than a border, so it carries the slight irregularity that makes a page
+   * feel made by people.
+   */
+  .swash {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='12' viewBox='0 0 120 12' preserveAspectRatio='none'%3E%3Cpath d='M2 8.5c22-4 44-5.5 78-4.5 14 .4 26 1.6 38 3' stroke='%23C75B39' stroke-width='3.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: left 0.94em;
+    background-size: 100% 0.3em;
+    padding-bottom: 0.14em;
+  }
+
+  /* Teal field. Accents invert inside it. */
+  .teal-block {
+    background-color: var(--color-teal);
+    color: var(--color-on-teal);
+  }
+
+  /* Soft elevation, tinted with the teal rather than pure black. That tint
+     is what keeps shadows on a cream page from reading as grey dirt. */
+  .lift {
+    box-shadow:
+      0 1px 2px #0f3d3e0f,
+      0 8px 24px -12px #0f3d3e2b;
+  }
+
+  .lift-lg {
+    box-shadow:
+      0 2px 4px #0f3d3e0f,
+      0 28px 60px -28px #0f3d3e40;
+  }
+
+  /*
+   * On-load entrance, staggered via --d.
+   *
+   * Deliberately CSS and not a JS animation library. The hero headline is the
+   * first thing a visitor reads, and a JS-driven entrance starts from
+   * opacity: 0, so a slow hydration, a failed chunk or a throttled main
+   * thread leaves the most important sentence on the site invisible. A CSS
+   * animation runs off the style sheet, before and independently of any
+   * JavaScript, and `fill-mode: both` holds the end state afterwards.
+   */
+  .enter {
+    animation: rise 0.9s var(--ease-out-soft) both;
+    animation-delay: var(--d, 0ms);
+  }
+
+  /*
+   * Scroll reveal. See components/reveal.tsx for the reasoning.
+   *
+   * The hidden start state is scoped to `.js`, which an inline script in the
+   * layout adds to <html>. Without JavaScript, or before hydration, content
+   * is simply visible, which is the correct failure mode for a page whose job
+   * is to be read.
+   */
+  .reveal {
+    transition:
+      opacity 0.75s var(--ease-out-soft),
+      transform 0.75s var(--ease-out-soft);
+    transition-delay: var(--reveal-d, 0ms);
+  }
+
+  .js .reveal {
+    opacity: 0;
+    transform: translate3d(0, var(--reveal-y, 20px), 0);
+  }
+
+  .js .reveal.is-in {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Already on screen at load: show it, but skip the entrance. */
+  .js .reveal.is-instant {
+    transition: none;
+  }
+}
+
+@layer utilities {
+  /* Edge-fade for marquees and overflow rows. */
+  .fade-x {
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 7%,
+      black 93%,
+      transparent
+    );
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    /* Without this an entrance with a 600ms delay would still hold its
+       invisible start state for 600ms; snapping the duration isn't enough. */
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    transition-delay: 0ms !important;
+  }
+
+  /* Scroll reveals become no-ops rather than instant transitions, so nothing
+     is ever hidden waiting on an observer that may not have fired. */
+  .js .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
